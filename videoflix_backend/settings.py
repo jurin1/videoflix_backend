@@ -52,6 +52,8 @@ INSTALLED_APPS = [
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
+
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
@@ -158,3 +160,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST') 
+EMAIL_PORT = os.environ.get('EMAIL_PORT') 
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True' 
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') 
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL') 

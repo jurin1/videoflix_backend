@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Videoflix Account Activation</title>
+</head>
+
+<body>
+    <h1>Welcome to Videoflix, {{ username }}!</h1>
+    <p>Please click the button below to activate your account:</p>
+    <p><a href="{{ activation_link }}"
+            style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Activate
+            Account</a></p>
+    <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+    <p><a href="{{ activation_link }}">{{ activation_link }}</a></p>
+    <p>If you did not register for Videoflix, please ignore this email.</p>
+    <hr>
+    <p style="color: red;">you,<br>The Videoflix Team</p>
+</body>
+
+</html>
