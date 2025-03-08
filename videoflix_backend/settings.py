@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
+
 
 load_dotenv()
 
@@ -167,3 +169,10 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') 
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL') 
+
+CELERY_BEAT_SCHEDULE = {
+    'cleanup-inactive-users-daily': {
+        'task': 'users.tasks.cleanup_inactive_users', 
+        'schedule': crontab(minute=0, hour=3), # Beispiel: Täglich um 3:00 Uhr morgens
+    },
+}

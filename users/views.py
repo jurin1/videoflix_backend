@@ -12,6 +12,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from rest_framework import exceptions 
 
 
 class RegisterView(generics.CreateAPIView):
@@ -25,9 +26,9 @@ class RegisterView(generics.CreateAPIView):
 
         mail_subject = 'Activate your Videoflix account'
         activation_link = self.request.build_absolute_uri(reverse('activate', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)), 'token': activation_token.token}))
-        
-        html_message = render_to_string('email.html', { 
-            'username': user.username, 
+
+        html_message = render_to_string('email.html', {
+            'username': user.username,
             'activation_link': activation_link,
         })
         plain_message = f"""
@@ -41,17 +42,22 @@ class RegisterView(generics.CreateAPIView):
 
             Thank you,
             The Videoflix Team
-        """ 
-
+        """
 
         email = EmailMessage(
             subject=mail_subject,
-            body=html_message,  
+            body=html_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[user.email]
         )
-        email.content_subtype = 'html' 
+        email.content_subtype = 'html'
         email.send(fail_silently=False)
+
+    def handle_exception(self, exc): 
+        if isinstance(exc, exceptions.ValidationError): 
+            return Response({'error': 'Konto existiert bereits. Gehe bitte zur Seite Passwort zurücksetzen, falls du dein Passwort vergessen hast.'}, status=400)
+
+        return super().handle_exception(exc)
 
 
 class LoginView(generics.CreateAPIView):
