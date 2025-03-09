@@ -19,6 +19,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*cache*
 
 # Django
 *.log
@@ -64,3 +65,7 @@ static/
 
 # Celery
 *celery*
+
+#pytest
+*.pytest*
+*.coverage
