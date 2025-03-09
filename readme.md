@@ -198,4 +198,3 @@ Dieses Projekt ist unter der MIT Lizenz lizenziert. Siehe die LICENSE Datei für
 ## 12. Autor
 
 Juri
-```
