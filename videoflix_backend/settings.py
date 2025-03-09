@@ -176,3 +176,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=3), # Beispiel: Täglich um 3:00 Uhr morgens
     },
 }
+
+FRONTEND_PASSWORD_RESET_URL = os.environ.get('FRONTEND_PASSWORD_RESET_URL', 'http://localhost:4200/password-reset')

@@ -18,3 +18,11 @@ class AccountActivationToken(models.Model):
 
     def __str__(self):
         return f"Activation Token for {self.user.username}"
+    
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Password Reset Token for {self.user.username}"
