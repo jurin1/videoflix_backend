@@ -69,3 +69,4 @@ static/
 #pytest
 *.pytest*
 *.coverage
+htmlcov
