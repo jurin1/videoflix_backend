@@ -68,6 +68,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -185,4 +186,9 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=videos,users', 
     '--cover-html', 
+]
+
+AUTHENTICATION_BACKENDS = [
+    'users.authentication.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]

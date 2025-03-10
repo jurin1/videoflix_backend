@@ -28,7 +28,7 @@ def convert_video_task(video_id):
         command = [
             'ffmpeg',
             '-i', video_path,
-            '-vf', f'scale=trunc(oh*a/2)*2:{resolution_name[:3]}',
+            '-vf', f'scale=trunc(oh*a/2)*2:{resolution_name[:-1]}',
             '-c:v', 'libx264',
             '-preset', 'slow',
             '-crf', '22',

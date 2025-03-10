@@ -1,10 +1,10 @@
 from rest_framework import generics, permissions
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from users.serializers import PasswordResetRequestSerializer, UserSerializer
 from users.models import CustomUser, AccountActivationToken
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -17,9 +17,7 @@ from rest_framework import status
 from users.serializers import PasswordResetConfirmSerializer
 from users.models import PasswordResetToken
 
-
-
-
+User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -65,15 +63,26 @@ class RegisterView(generics.CreateAPIView):
         return super().handle_exception(exc)
 
 
-class LoginView(generics.CreateAPIView):
-    permission_classes = [permissions.AllowAny]
+class LoginView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        username_or_email = request.data.get('username')  
         password = request.data.get('password')
-        user = authenticate(request, username=username, password=password)
+
+        user = authenticate(request, username=username_or_email, password=password)
+
+        if user is None:  
+            try:
+                user = User.objects.get(email=username_or_email) 
+                if user.check_password(password):  
+                    user = authenticate(request, username=user.username, password=password)  
+                else:
+                    user = None
+            except User.DoesNotExist:
+                user = None 
+
         if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
+            token, _ = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
         else:
             return Response({'error': 'Ungültige Anmeldeinformationen'}, status=400)
