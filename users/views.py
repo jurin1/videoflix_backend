@@ -2,7 +2,7 @@ from rest_framework import generics, permissions
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from users.serializers import PasswordResetRequestSerializer, UserSerializer
+from users.serializers import PasswordResetRequestSerializer, UserSerializer, LoginSerializer
 from users.models import CustomUser, AccountActivationToken
 from django.contrib.auth import authenticate
 from django.urls import reverse
@@ -16,6 +16,7 @@ from rest_framework import exceptions
 from rest_framework import status
 from users.serializers import PasswordResetConfirmSerializer
 from users.models import PasswordResetToken
+
 
 User = get_user_model()
 class RegisterView(generics.CreateAPIView):
@@ -64,30 +65,16 @@ class RegisterView(generics.CreateAPIView):
 
 
 class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        username_or_email = request.data.get('username')  
-        password = request.data.get('password')
-
-        user = authenticate(request, username=username_or_email, password=password)
-
-        if user is None:  
-            try:
-                user = User.objects.get(email=username_or_email) 
-                if user.check_password(password):  
-                    user = authenticate(request, username=user.username, password=password)  
-                else:
-                    user = None
-            except User.DoesNotExist:
-                user = None 
-
-        if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        else:
-            return Response({'error': 'Ungültige Anmeldeinformationen'}, status=400)
-
-
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
