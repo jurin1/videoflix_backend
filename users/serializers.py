@@ -95,7 +95,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         user.save()
         reset_token.delete() 
 
-from django.utils.translation import gettext_lazy as _  # Für bessere Fehlermeldungen
+from django.utils.translation import gettext_lazy as _  
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(required=True)
@@ -107,17 +107,17 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         if email and password:
-            user = CustomUser.objects.filter(email=email).first() # Benutzer per Email suchen
+            user = CustomUser.objects.filter(email=email).first() 
             if user:
-                user = authenticate(username=user.username, password=password) # Authentifizierung mit username
+                user = authenticate(username=user.username, password=password) 
                 if user:
                     if not user.is_active:
-                        raise serializers.ValidationError(_("Benutzerkonto ist deaktiviert.")) # Übersetzbare Fehlermeldung
+                        raise serializers.ValidationError(_("Benutzerkonto ist deaktiviert.")) 
                     data['user'] = user
                 else:
-                    raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) # Übersetzbare Fehlermeldung
+                    raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) 
             else:
-                raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) # Übersetzbare Fehlermeldung
+                raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) 
         else:
             raise serializers.ValidationError(_("Email und Passwort sind erforderlich.")) # Übersetzbare Fehlermeldung
         return data
