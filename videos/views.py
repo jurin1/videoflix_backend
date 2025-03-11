@@ -6,6 +6,11 @@ from .models import Video, VideoViewing
 from .tasks import convert_video_task
 
 
+class AllVideosListView(generics.ListAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 class VideoUploadView(generics.CreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import VideoUploadView, StartViewingView, UpdateViewingProgressView, MarkVideoAsFinishedView, GetViewingProgressView, ContinueWatchingListView
+from .views import AllVideosListView, VideoUploadView, StartViewingView, UpdateViewingProgressView, MarkVideoAsFinishedView, GetViewingProgressView, ContinueWatchingListView
 
 urlpatterns = [
+    path('all-videos/', AllVideosListView.as_view(), name='all-videos'),
     path('upload/', VideoUploadView.as_view(), name='video-upload'),
     path('viewing/start/', StartViewingView.as_view(), name='start-viewing'),
     path('viewing/progress/<int:pk>/', UpdateViewingProgressView.as_view(), name='update-viewing-progress'),
