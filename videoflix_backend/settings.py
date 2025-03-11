@@ -179,6 +179,7 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 FRONTEND_PASSWORD_RESET_URL = os.environ.get('FRONTEND_PASSWORD_RESET_URL', 'http://localhost:4200/reset-password')
+FRONTEND_URL = os.environ.get('LOGO_URL', 'http://localhost:4200/')
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 

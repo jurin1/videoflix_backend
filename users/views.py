@@ -24,6 +24,8 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
+        frontend_url = settings.FRONTEND_URL
+
         user = serializer.save(is_active=False)
         activation_token = AccountActivationToken.objects.create(user=user)
 
@@ -33,6 +35,7 @@ class RegisterView(generics.CreateAPIView):
         html_message = render_to_string('email-activate-account.html', {
             'username': user.username,
             'activation_link': activation_link,
+            'frontend_url': frontend_url,
         })
         plain_message = f"""
             Hello {user.username},
@@ -105,6 +108,7 @@ class PasswordResetRequestView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
+        frontend_url = settings.FRONTEND_URL
 
         try:
             user = CustomUser.objects.get(email=email)
@@ -115,22 +119,24 @@ class PasswordResetRequestView(generics.GenericAPIView):
         PasswordResetToken.objects.filter(user=user).delete() 
         reset_token = PasswordResetToken.objects.create(user=user)
 
-        reset_link = self.build_reset_link(request, user, reset_token.token)
-        self.send_reset_email(user, reset_link)
+        reset_link = self.build_reset_link(user, reset_token.token, frontend_url)
+        self.send_reset_email(user, reset_link, frontend_url)
 
         return Response({'message': 'Passwort-Reset-Link wurde gesendet, falls ein Konto mit dieser E-Mail-Adresse existiert.'}, status=status.HTTP_200_OK)
 
-    def build_reset_link(self, request, user, token):
+    def build_reset_link(self, user, token, frontend_url):
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-        frontend_url = settings.FRONTEND_PASSWORD_RESET_URL 
-        reset_link = f"{frontend_url}/{uidb64}/{token}/" 
+        reset_link = f"{frontend_url}/reset-password/{uidb64}/{token}/"
+         
+        
         return reset_link
 
-    def send_reset_email(self, user, reset_link):
+    def send_reset_email(self, user, reset_link, frontend_url):
         mail_subject = 'Passwort zurücksetzen für Videoflix'
         html_message = render_to_string('email_password_reset.html', { 
             'username': user.username,
             'reset_link': reset_link,
+            'frontend_url': frontend_url,
         })
         plain_message = f"""
             Hallo {user.username},
