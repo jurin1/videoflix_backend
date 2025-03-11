@@ -3,7 +3,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
 from rest_framework import serializers
 from users.models import CustomUser, PasswordResetToken
-from django.db.models import Q
 from rest_framework.validators import UniqueValidator
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import authenticate
@@ -96,23 +95,27 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         reset_token.delete() 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    email = serializers.CharField(required=True)  
     password = serializers.CharField(required=True, write_only=True)
     token = serializers.CharField(read_only=True)
 
     def validate(self, data):
-        username = data.get('username')
+        email = data.get('email') 
         password = data.get('password')
+        print(f"Email beim Login-Versuch: {email}")
 
-        if username and password:
-            user = authenticate(username=username, password=password)  # Keine Request mehr übergeben
+        if email and password:
+            user = authenticate(username=email, password=password) 
+
+            print(f"Benutzer nach authenticate(): {user}")
+            
             if user:
                 if not user.is_active:
                     raise serializers.ValidationError("Benutzerkonto ist deaktiviert.")
-                data['user'] = user  
+                data['user'] = user
             else:
                 raise serializers.ValidationError("Ungültige Anmeldeinformationen.")
         else:
-            raise serializers.ValidationError("Benutzername und Passwort sind erforderlich.")
+            raise serializers.ValidationError("Email und Passwort sind erforderlich.") 
 
         return data

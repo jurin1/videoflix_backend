@@ -189,6 +189,5 @@ NOSE_ARGS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'users.authentication.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]

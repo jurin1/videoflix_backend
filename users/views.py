@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from users.serializers import PasswordResetRequestSerializer, UserSerializer, LoginSerializer
 from users.models import CustomUser, AccountActivationToken
-from django.contrib.auth import authenticate
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -63,9 +62,8 @@ class RegisterView(generics.CreateAPIView):
 
         return super().handle_exception(exc)
 
-
 class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
+    serializer_class = LoginSerializer 
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
