@@ -54,13 +54,13 @@ def convert_video_task(video_id):
     thumbnail_command = [
         'ffmpeg',
         '-i', video_path,
-        '-ss', '00:00:01',
+        '-ss', '00:00:30',
         '-vframes', '1',
         '-vf', 'scale=320:-1',
         thumbnail_path
     ]
     subprocess.run(thumbnail_command, capture_output=True, text=True, check=True)
-    thumbnail_relative_url = os.path.join(settings.MEDIA_URL, 'videos', video_folder_name, thumbnail_filename).replace('\\', '/')
+    thumbnail_relative_url = os.path.join('videos', video_folder_name, thumbnail_filename).replace('\\', '/')    
     video.resolutions = converted_resolutions_urls 
     video.thumbnail = thumbnail_relative_url 
     video.save()

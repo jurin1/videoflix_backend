@@ -8,6 +8,6 @@ def cleanup_inactive_users():
     """Löscht täglich inaktive Benutzer, die älter als 1 Tag sind."""
     cutoff_date = timezone.now() - timedelta(days=1)
     inactive_users = CustomUser.objects.filter(is_active=False, date_joined__lte=cutoff_date)
-    deleted_count = inactive_users.count() # Optional: Zähle gelöschte Benutzer
+    deleted_count = inactive_users.count() 
     inactive_users.delete()
-    print(f"Celery Task: {deleted_count} inaktive Benutzer wurden gelöscht.") # Optional: Log-Ausgabe
+    print(f"Celery Task: {deleted_count} inaktive Benutzer wurden gelöscht.") 
