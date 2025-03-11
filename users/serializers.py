@@ -6,6 +6,7 @@ from users.models import CustomUser, PasswordResetToken
 from rest_framework.validators import UniqueValidator
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import authenticate
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -94,28 +95,29 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         user.save()
         reset_token.delete() 
 
+from django.utils.translation import gettext_lazy as _  # Für bessere Fehlermeldungen
+
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(required=True)  
+    email = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
     token = serializers.CharField(read_only=True)
 
     def validate(self, data):
-        email = data.get('email') 
+        email = data.get('email')
         password = data.get('password')
-        print(f"Email beim Login-Versuch: {email}")
 
         if email and password:
-            user = authenticate(username=email, password=password) 
-
-            print(f"Benutzer nach authenticate(): {user}")
-            
+            user = CustomUser.objects.filter(email=email).first() # Benutzer per Email suchen
             if user:
-                if not user.is_active:
-                    raise serializers.ValidationError("Benutzerkonto ist deaktiviert.")
-                data['user'] = user
+                user = authenticate(username=user.username, password=password) # Authentifizierung mit username
+                if user:
+                    if not user.is_active:
+                        raise serializers.ValidationError(_("Benutzerkonto ist deaktiviert.")) # Übersetzbare Fehlermeldung
+                    data['user'] = user
+                else:
+                    raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) # Übersetzbare Fehlermeldung
             else:
-                raise serializers.ValidationError("Ungültige Anmeldeinformationen.")
+                raise serializers.ValidationError(_("Ungültige Anmeldeinformationen.")) # Übersetzbare Fehlermeldung
         else:
-            raise serializers.ValidationError("Email und Passwort sind erforderlich.") 
-
+            raise serializers.ValidationError(_("Email und Passwort sind erforderlich.")) # Übersetzbare Fehlermeldung
         return data

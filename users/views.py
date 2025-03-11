@@ -63,7 +63,7 @@ class RegisterView(generics.CreateAPIView):
         return super().handle_exception(exc)
 
 class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer 
+    serializer_class = LoginSerializer
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
