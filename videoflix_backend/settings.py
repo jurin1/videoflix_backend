@@ -83,6 +83,7 @@ ROOT_URLCONF = 'videoflix_backend.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200", 
     "http://localhost:5500", 
+    "null"
 ]
 
 TEMPLATES = [
