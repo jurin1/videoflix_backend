@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Videoflix Konto Information</title>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <a href="{{ frontend_url }}"><img src="{{ frontend_url }}/assets/images/Logo.png" alt="Videoflix Logo"></a>
+    </div>
+    <h1>Hallo {{ username }},</h1>
+    <p>Dein Videoflix-Konto ist bereits aktiv.</p>
+    <p>Wenn du dein Passwort vergessen hast, klicke bitte auf den Button unten, um ein neues Passwort zu setzen:</p>
+    <p><a href="{{ reset_link }}"
+            style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Passwort
+            zurücksetzen</a></p>
+    <p>Wenn der Button nicht funktioniert, kannst du den folgenden Link in deinen Browser kopieren und einfügen:</p>
+    <p><a href="{{ reset_link }}">{{ reset_link }}</a></p>
+    <p>Wenn du keine Passwortzurücksetzung angefordert hast, ignoriere diese E-Mail einfach.</p>
+    <hr>
+    <p>Viele Grüße,<br>Das Videoflix Team</p>
+</body>
+
+</html>

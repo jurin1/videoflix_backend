@@ -8,4 +8,5 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.ActivateAccountView.as_view(), name='activate'),
     path('password/reset/', views.PasswordResetRequestView.as_view(), name='password_reset_request'), 
     path('password/reset/confirm/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'), 
+    path('account-action-request/', views.AccountActionRequestView.as_view(), name='account-action-request'),
 ]

@@ -121,3 +121,8 @@ class LoginSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError(_("Email und Passwort sind erforderlich.")) # Übersetzbare Fehlermeldung
         return data
+    
+from rest_framework import serializers
+
+class AccountActionRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
