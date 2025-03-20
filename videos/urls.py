@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AllVideosListView, VideoUploadView, StartViewingView, UpdateViewingProgressView, MarkVideoAsFinishedView, GetViewingProgressView, ContinueWatchingListView, VideoStreamView # VideoStreamView importieren
+from .views import AllVideosListView, VideoUploadView, StartViewingView, UpdateViewingProgressView, MarkVideoAsFinishedView, GetViewingProgressView, ContinueWatchingListView, VideoStreamView, ThumbnailStreamView
 
 urlpatterns = [
     path('all-videos/', AllVideosListView.as_view(), name='all-videos'),
@@ -9,5 +9,6 @@ urlpatterns = [
     path('viewing/finished/<int:pk>/', MarkVideoAsFinishedView.as_view(), name='mark-video-finished'),
     path('viewing/get/<int:pk>/', GetViewingProgressView.as_view(), name='get-viewing-progress'),
     path('viewing/continue-watching/', ContinueWatchingListView.as_view(), name='continue-watching-list'),
-    path('stream/<int:pk>/<str:resolution>/', VideoStreamView.as_view(), name='video-stream'), # NEU: URL für VideoStreamView
+    path('stream/<int:pk>/<str:resolution>/', VideoStreamView.as_view(), name='video-stream'),
+    path('thumbnail/<int:pk>/', ThumbnailStreamView.as_view(), name='video-thumbnail'),
 ]

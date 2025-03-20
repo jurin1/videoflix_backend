@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .serializers import VideoSerializer, VideoViewingSerializer
 from .models import Video, VideoViewing
 from .tasks import convert_video_task
-from django.http import StreamingHttpResponse, HttpResponseBadRequest, FileResponse, HttpResponseNotFound
+from django.http import HttpResponse, StreamingHttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 import os
 from django.conf import settings
 from wsgiref.headers import Headers
@@ -193,7 +193,7 @@ class VideoStreamView(generics.RetrieveAPIView):
     """
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    # permission_classes = [permissions.IsAuthenticated] # Removed authentication for public access, enable if needed.
+    permission_classes = [permissions.IsAuthenticated] 
     lookup_field = 'pk'
 
     def retrieve(self, request, *args, **kwargs):
@@ -208,7 +208,7 @@ class VideoStreamView(generics.RetrieveAPIView):
         instance = self.get_object()
         resolution_name = kwargs.get('resolution')
 
-        if resolution_name:  # Serve specific resolution
+        if resolution_name:  
             resolutions = instance.resolutions
             if not resolutions or resolution_name not in resolutions:
                 return HttpResponseBadRequest(
@@ -218,7 +218,7 @@ class VideoStreamView(generics.RetrieveAPIView):
             video_path = os.path.normpath(os.path.join(settings.BASE_DIR, relative_video_path[1:])) # Use normpath to clean up path
 
 
-        else:  # Serve original video file (no resolution specified in URL)
+        else:  
             video_path = instance.video_file.path
 
         print(f"DEBUG: VideoStreamView - Checking for file existence at path: {video_path}")  # Debug print - Consider removing or using a proper logging setup
@@ -259,3 +259,27 @@ class VideoStreamView(generics.RetrieveAPIView):
         response['Content-Range'] = f'bytes {start}-{end}/{file_size}'
         response['Accept-Ranges'] = 'bytes'
         return response
+    
+class ThumbnailStreamView(generics.RetrieveAPIView):
+    """
+    API view to stream thumbnail images.
+    """
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+    # permission_classes = [permissions.IsAuthenticated] # Optional: Aktivieren Sie dies, wenn Thumbnails geschützt sein sollen
+    lookup_field = 'pk'
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        thumbnail_path_relative = instance.thumbnail.path 
+        thumbnail_path_absolute = os.path.join(settings.MEDIA_ROOT, thumbnail_path_relative)
+        print(f"DEBUG: ThumbnailStreamView - Checking for thumbnail at path: {thumbnail_path_absolute}") 
+
+        if not os.path.exists(thumbnail_path_absolute):
+            return HttpResponseNotFound(f"Thumbnail not found at: {thumbnail_path_absolute}")
+
+        try:
+            with open(thumbnail_path_absolute, 'rb') as f:
+                return HttpResponse(f.read(), content_type="image/jpeg") 
+        except IOError:
+            return HttpResponseNotFound("Could not read thumbnail file")
