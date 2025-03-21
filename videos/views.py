@@ -193,7 +193,7 @@ class VideoStreamView(generics.RetrieveAPIView):
     """
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    permission_classes = [permissions.IsAuthenticated] 
+    # permission_classes = [permissions.IsAuthenticated] 
     lookup_field = 'pk'
 
     def retrieve(self, request, *args, **kwargs):

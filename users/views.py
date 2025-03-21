@@ -223,6 +223,7 @@ class PasswordResetRequestView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         frontend_url = settings.FRONTEND_URL
+        logo_url = settings.LOGO_URL
 
         try:
             user = CustomUser.objects.get(email=email)
