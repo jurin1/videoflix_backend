@@ -1,200 +1,199 @@
+Okay, here's the translation of the text into English:
+
 # Videoflix Backend
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Django Version](https://img.shields.io/badge/django-5.1.6-green.svg)](https://www.djangoproject.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> Backend für Videoflix - ein Lernprojekt zum Nachbau von Netflix mit Angular und Django.
+> Backend for Videoflix - a learning project to replicate Netflix with Angular and Django.
 
-Dieses Projekt ist das Backend für Videoflix, einer Webanwendung zum Streamen von Videos, die als Lernprojekt mit Django und Django REST Framework erstellt wurde. Es dient als REST API für das Frontend (Angular, React oder Vue.js).
+This project is the backend for Videoflix, a video streaming web application built as a learning project using Django and Django REST Framework. It serves as a REST API for the frontend (Angular, React, or Vue.js).  Here's the corresponding [Videoflix Frontend](https://github.com/jurin1/videoflix_frontend).
 
-## Inhaltsverzeichnis
+## Table of Contents
 
-1. Voraussetzungen
-2. Installation
-3. Umgebungsvariablen
-4. Datenbankmigrationen
-5. Entwicklungsserver starten
-6. Celery Worker & Beat starten
-7. Tests ausführen
-8. Docker (Optional)
-9. API Endpunkte (Überblick)
-10. Beitragen
-11. Lizenz
-12. Autor
+1.  Prerequisites
+2.  Installation
+3.  Environment Variables
+4.  Database Migrations
+5.  Starting the Development Server
+6.  Starting Celery Worker & Beat
+7.  Running Tests
+8.  Docker (Optional)
+9.  API Endpoints (Overview)
+10. Contributing
+11. License
 
-## 1. Voraussetzungen
+## 1. Prerequisites
 
-* Python: Python 3.11 oder höher ist erforderlich. Du kannst Python von [python.org](https://www.python.org/downloads/) herunterladen.
-* pip: pip ist der Python Package Installer, der normalerweise mit Python installiert wird.
-* Virtual Environment (venv empfohlen): Es wird dringend empfohlen, ein virtuelles Environment zu verwenden, um Projektabhängigkeiten isoliert zu halten.
-* Datenbank:
-    * Für die Entwicklung: SQLite (standardmäßig in Django enthalten).
-    * Für Produktion (empfohlen): PostgreSQL. Stelle sicher, dass PostgreSQL installiert und konfiguriert ist.
-* Redis: Redis ist für Celery als Broker und möglicherweise für Caching erforderlich. Installiere und starte einen Redis Server.
-* FFmpeg: FFmpeg wird für die Videokonvertierung und Thumbnail-Erstellung benötigt. Stelle sicher, dass FFmpeg installiert und im Systempfad verfügbar ist.
-* Frontend (Optional, für vollständige App): Für das Frontend wird Angular, React oder Vue.js empfohlen. Dieses Repository enthält jedoch nur das Backend.
+*   Python: Python 3.11 or higher is required. You can download Python from [python.org](https://www.python.org/downloads/).
+*   pip: pip is the Python Package Installer, which is usually installed with Python.
+*   Virtual Environment (venv recommended): It is highly recommended to use a virtual environment to keep project dependencies isolated.
+*   Database:
+    *   For development: SQLite (included by default in Django).
+    *   For production (recommended): PostgreSQL. Ensure PostgreSQL is installed and configured.
+*   Redis: Redis is required for Celery as a broker and potentially for caching. Install and start a Redis server.
+*   FFmpeg: FFmpeg is required for video conversion and thumbnail creation. Ensure FFmpeg is installed and available in the system path.
+*   Frontend (Optional, for complete app): Angular, React, or Vue.js is recommended for the frontend. However, this repository only contains the backend.
 
 ## 2. Installation
 
-1. Repository klonen:
-   ```bash
-   git clone <repository-url>
-   cd videoflix_backend
-   ```
-   Ersetze `<repository-url>` mit der URL deines GitHub Repositories.
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/jurin1/videoflix_backend
+    cd videoflix_backend
+    ```
+    Replace `<repository-url>` with the URL of your GitHub repository.
 
-2. Virtuelles Environment erstellen (empfohlen):
-   ```bash
-   python -m venv venv
-   ```
+2.  Create a virtual environment (recommended):
+    ```bash
+    python -m venv venv
+    ```
 
-3. Virtuelles Environment aktivieren:
-   * Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   * macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+3.  Activate the virtual environment:
+    *   Windows:
+        ```bash
+        venv\Scripts\activate
+        ```
+    *   macOS/Linux:
+        ```bash
+        source venv/bin/activate
+        ```
 
-4. Projektabhängigkeiten installieren:
-   Um alle benötigten Python-Pakete zu installieren, stelle zuerst sicher, dass du eine `requirements.txt` Datei im Projektverzeichnis hast. Falls noch nicht vorhanden, kannst du diese erstellen, nachdem du alle benötigten Pakete installiert hast (siehe Hinweis unten). Sobald die `requirements.txt` Datei existiert, führe folgenden Befehl aus:
+4.  Install project dependencies:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+    To install all required Python packages, first make sure you have a `requirements.txt` file in the project directory. If it doesn't exist yet, you can create it after installing all the required packages (see note below). Once the `requirements.txt` file exists, run the following command:
 
-   **Hinweis zur `requirements.txt` Datei:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-   Die `requirements.txt` Datei listet alle Python-Pakete auf, die für das Projekt benötigt werden. Wenn du das Projekt zum ersten Mal einrichtest, oder wenn du neue Python-Pakete hinzufügst oder aktualisierst, solltest du die `requirements.txt` Datei aktualisieren. Um die `requirements.txt` Datei zu erstellen oder zu aktualisieren, nachdem du alle benötigten Pakete installiert hast (z.B. mit `pip install django restframework ...`), führe folgenden Befehl im Projektverzeichnis aus:
+    **Note about the `requirements.txt` file:**
 
-   ```bash
-   pip freeze > requirements.txt
-   ```
+    The `requirements.txt` file lists all Python packages required for the project. When you first set up the project, or when you add or update new Python packages, you should update the `requirements.txt` file. To create or update the `requirements.txt` file after you have installed all the necessary packages (e.g. with `pip install django restframework ...`), run the following command in the project directory:
 
-   Diese generierte Datei sollte dann in deinem Repository gespeichert und mit dem Code committet werden.
+    ```bash
+    pip freeze > requirements.txt
+    ```
 
-## 3. Umgebungsvariablen
+    This generated file should then be stored in your repository and committed with the code.
 
-Kopiere die `.env.example` Datei nach `.env` und passe die Variablen in der `.env` Datei an deine lokale Umgebung an.
+## 3. Environment Variables
+
+Copy the `.env.example` file to `.env` and adjust the variables in the `.env` file to your local environment.
 
 ```bash
 cp .env.example .env
 ```
 
-Die `.env` Datei sollte mindestens folgende Variablen enthalten:
+The `.env` file should contain at least the following variables:
 
 ```
-DATABASE_ENGINE=django.db.backends.postgresql  # oder django.db.backends.sqlite3 für SQLite
+DATABASE_ENGINE=django.db.backends.postgresql  # or django.db.backends.sqlite3 for SQLite
 DATABASE_NAME=videoflix_db
 DATABASE_USER=videoflix_user
 DATABASE_PASSWORD=your_db_password
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
-SECRET_KEY=dein_geheimer_django_secret_key
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend # oder andere Email Backends
+SECRET_KEY=your_django_secret_key
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend # or other Email Backends
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your_email@example.com
 EMAIL_HOST_PASSWORD=your_email_password
 DEFAULT_FROM_EMAIL=your_email@example.com
-CELERY_BROKER_URL=redis://localhost:6379/0 # oder deine Redis Connection URL
-FRONTEND_PASSWORD_RESET_URL=http://localhost:4200/password-reset # URL deiner Frontend Passwort Reset Seite
+CELERY_BROKER_URL=redis://localhost:6379/0 # or your Redis Connection URL
+FRONTEND_PASSWORD_RESET_URL=http://localhost:4200/password-reset # URL of your Frontend password reset page
 ```
 
-**Hinweis:** Vergiss nicht, einen sicheren `SECRET_KEY` für die Produktion zu generieren und sensible Informationen wie Datenbankpasswörter und E-Mail-Passwörter sicher zu verwalten.
+**Note:** Remember to generate a secure `SECRET_KEY` for production and manage sensitive information such as database passwords and email passwords securely.
 
-## 4. Datenbankmigrationen
+## 4. Database Migrations
 
-Führe die Datenbankmigrationen aus, um die Datenbanktabellen zu erstellen:
+Run the database migrations to create the database tables:
 
 ```bash
 python manage.py migrate
 ```
 
-## 5. Entwicklungsserver starten
+## 5. Starting the Development Server
 
-Starte den Django Entwicklungsserver:
+Start the Django development server:
 
 ```bash
 python manage.py runserver
 ```
 
-Die Backend API sollte nun unter http://localhost:8000/ erreichbar sein.
+The backend API should now be accessible at http://localhost:8000/.
 
-## 6. Celery Worker & Beat starten
+## 6. Starting Celery Worker & Beat
 
-Starte den Celery Worker und Celery Beat für die Verarbeitung von Hintergrundaufgaben (Videokonvertierung, periodische Tasks):
+Start the Celery Worker and Celery Beat for processing background tasks (video conversion, periodic tasks):
 
-**Celery Worker** (in einem neuen Terminal):
+**Celery Worker** (in a new terminal):
 
 ```bash
 celery -A videoflix_backend worker -l info
 ```
 
-**Celery Beat** (in einem weiteren neuen Terminal):
+**Celery Beat** (in another new terminal):
 
 ```bash
 celery -A videoflix_backend beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
 
-Stelle sicher, dass dein Redis Server läuft, bevor du Celery startest.
+Make sure your Redis server is running before starting Celery.
 
-## 7. Tests ausführen
+## 7. Running Tests
 
-Um die Backend Tests auszuführen, verwende `pytest`:
+To run the backend tests, use `pytest`:
 
 ```bash
 pytest
 ```
 
-Um die Testabdeckung zu messen und einen HTML Report zu erstellen:
+To measure test coverage and create an HTML report:
 
 ```bash
 pytest --cov=videos --cov=users --cov-report html
 ```
 
-Der HTML Coverage Report wird im `htmlcov` Verzeichnis erstellt.
+The HTML coverage report will be created in the `htmlcov` directory.
 
 ## 8. Docker (Optional)
 
-(Hier könntest du Anweisungen für Docker hinzufügen, falls du Dockerisierung planst. Z.B. Dockerfile, `docker-compose.yml` und Anweisungen zum Bauen und Starten mit Docker Compose)
+(Here you could add instructions for Docker if you plan to Dockerize. E.g., Dockerfile, `docker-compose.yml`, and instructions for building and starting with Docker Compose)
 
 ```bash
-# Beispiel Docker Build & Run (muss noch angepasst werden)
+# Example Docker Build & Run (needs to be adjusted)
 docker-compose up --build
 ```
 
-## 9. API Endpunkte (Überblick)
+## 9. API Endpoints (Overview)
 
-Das Videoflix Backend bietet folgende Haupt-API Endpunkte:
+The Videoflix backend provides the following main API endpoints:
 
-* /api/users/register/: Benutzerregistrierung.
-* /api/users/login/: Benutzer Login und Token Erstellung.
-* /api/users/logout/: Benutzer Logout (Token Inaktivierung).
-* /api/users/activate/<uidb64>/<token>/: Account Aktivierung per E-Mail Link.
-* /api/users/password/reset/: Passwort Reset Anfrage.
-* /api/users/password/reset/confirm/<uidb64>/<token>/: Passwort Reset Bestätigung.
-* /api/videos/upload/: Video Upload (Admin/Staff Benutzer).
-* /api/videos/viewing/start/: Start Video Viewing und Verlauf starten/aktualisieren.
-* /api/videos/viewing/progress/<pk>/: Video Wiedergabefortschritt aktualisieren.
-* /api/videos/viewing/finished/<pk>/: Video als fertig angesehen markieren.
-* /api/videos/viewing/get/<pk>/: Wiedergabefortschritt abrufen.
-* /api/videos/viewing/continue-watching/: Liste der Videos, die der Benutzer noch nicht fertig angesehen hat.
+*   /api/users/register/: User registration.
+*   /api/users/login/: User login and token creation.
+*   /api/users/logout/: User logout (token invalidation).
+*   /api/users/activate/<uidb64>/<token>/: Account activation via email link.
+*   /api/users/password/reset/: Password reset request.
+*   /api/users/password/reset/confirm/<uidb64>/<token>/: Password reset confirmation.
+*   /api/videos/upload/: Video upload (Admin/Staff users).
+* /api/videos/viewing/start/: Start Video Viewing and start/update history.
+* /api/videos/viewing/progress/<pk>/: Update video playback progress.
+* /api/videos/viewing/finished/<pk>/: Mark video as watched.
+* /api/videos/viewing/get/<pk>/: Get the current playback progress.
+* /api/videos/viewing/continue-watching/: List of videos the user hasn't finished watching.
 
-Für detailliertere Informationen zu den API Endpunkten, Request Bodies und Response Formaten, siehe die [API Dokumentation](LINK_ZUR_API_DOKUMENTATION - falls vorhanden). (Du könntest hier später einen Link zu z.B. einer automatisch generierten API Doku mit Swagger oder ähnlichem einfügen)
+For more detailed information about the API endpoints, request bodies, and response formats, see the [API Documentation](LINK_TO_API_DOCUMENTATION - if available). (You could later insert a link here to e.g. an automatically generated API documentation with Swagger or similar)
 
-## 10. Beitragen
+## 10. Contributing
 
-Beiträge sind willkommen! Bitte lies die `CONTRIBUTING.md` Datei (falls vorhanden) für Details zum Prozess der Beitragsleistung.
+Contributions are welcome! Please read the `CONTRIBUTING.md` file (if available) for details on the contribution process.
 
-## 11. Lizenz
+## 11. License
 
-Dieses Projekt ist unter der MIT Lizenz lizenziert. Siehe die LICENSE Datei für Details.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-## 12. Autor
-
-Juri
